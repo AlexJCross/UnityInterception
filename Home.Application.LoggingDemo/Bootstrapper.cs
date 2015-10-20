@@ -13,7 +13,7 @@ namespace Home.Application.LoggingDemo
         private void LaunchApp()
         {
             Container.Resolve<MainApp>().Run();
-            Console.WriteLine("Press any key to continue...");
+            Console.WriteLine("\nPress any key to continue...");
             Console.ReadKey();
         }
 
@@ -29,15 +29,16 @@ namespace Home.Application.LoggingDemo
         protected override void ConfigureContainer()
         {
             this.Container.RegisterType<MainApp, MainApp>()
-                          .RegisterInstance<ILogger>(new Logger());
+                          .RegisterInstance<ILogger>(new Logger())
+                          .RegisterInstance<IItemFactory>(new ItemFactory());
 
-            this.Container.RegisterType<IMarioKartSkillLevelService, MarioKartSkillLevelService>("Root");
-            this.Container.RegisterType<IMarioKartSkillLevelService, CachingMarioKartSkillLevelService>(
-                "Caching", new InjectionConstructor(new ResolvedParameter<IMarioKartSkillLevelService>("Root")));
+            this.Container.RegisterType<IMarioKartPositionService, MarioKartPositionService>("Root");
+            this.Container.RegisterType<IMarioKartPositionService, CachingMarioKartPositionService>(
+                "Caching", new InjectionConstructor(new ResolvedParameter<IMarioKartPositionService>("Root")));
 
-            this.Container.RegisterType<IMarioKartSkillLevelService, LoggingMarioKartSkillLevelService>(
+            this.Container.RegisterType<IMarioKartPositionService, LoggingMarioKartPositionService>(
                 new InjectionConstructor(
-                    new ResolvedParameter<IMarioKartSkillLevelService>("Caching"),
+                    new ResolvedParameter<IMarioKartPositionService>("Caching"),
                     new ResolvedParameter<ILogger>()));
 
         }
@@ -48,11 +49,19 @@ namespace Home.Application.LoggingDemo
         protected override void ConfigureContainer()
         {
             this.Container.RegisterType<MainApp, MainApp>()
-                          .RegisterInstance<ILogger>(new Logger());
+                          .RegisterType<ILoggingCallHandler, LoggingCallHandler>(new ContainerControlledLifetimeManager())
+                          .RegisterInstance<ILogger>(new Logger())
+                          .RegisterInstance<IItemFactory>(new ItemFactory());
 
+            // Add interception functionality
             this.Container.AddNewExtension<Interception>();
-            
-            this.Container.RegisterType<IMarioKartSkillLevelService, MarioKartSkillLevelService>(
+
+            // Register Attribute style logging
+            this.Container.Configure<Interception>()
+                .SetInterceptorFor<IItemFactory>(new InterfaceInterceptor());
+
+            // Register behaviour style logging
+            this.Container.RegisterType<IMarioKartPositionService, MarioKartPositionService>(
                 new Interceptor<InterfaceInterceptor>(),
                 new InterceptionBehavior<LoggingInterceptionBehavior>());
         }

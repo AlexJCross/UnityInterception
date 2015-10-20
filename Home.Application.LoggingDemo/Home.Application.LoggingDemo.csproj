@@ -70,9 +70,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Item.cs" />
+    <Compile Include="ItemFactory.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="IMarioKartSkillLevelService.cs" />
+    <Compile Include="LoggingAttribute.cs" />
+    <Compile Include="MarioKartPositionService.cs" />
     <Compile Include="LoggingInterceptionBehavior.cs" />
+    <Compile Include="MainApp.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

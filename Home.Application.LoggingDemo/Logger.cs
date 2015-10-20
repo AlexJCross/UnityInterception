@@ -1,15 +1,12 @@
-using Microsoft.Practices.Unity;
-using Prism.Unity;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Home.Application.LoggingDemo
 {
+    using System;
+
     public interface ILogger
     {
         void Log(string message);
+
+        void Log(string format, params object[] arg);
     }
 
     public class Logger : ILogger
@@ -17,6 +14,11 @@ namespace Home.Application.LoggingDemo
         public void Log(string message)
         {
             Console.WriteLine(message);
+        }
+
+        public void Log(string format, params object[] arg)
+        {
+            Log(string.Format(format, arg));
         }
     }
 }
