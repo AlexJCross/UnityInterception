@@ -15,6 +15,11 @@ namespace Home.Application.LoggingDemo
 
         public IMethodReturn Invoke(IMethodInvocation input, GetNextInterceptionBehaviorDelegate getNext)
         {
+            if (input.MethodBase.Name != "GetPosition")
+            {
+                return getNext()(input, getNext);
+            }
+
             // Before invoking the method on the original target.
             this.logger.Log(String.Format(
                 "{0}: Invoking method {1}",
@@ -47,7 +52,10 @@ namespace Home.Application.LoggingDemo
 
         public bool WillExecute
         {
-            get { return true; }
+            get
+            {
+                return true;
+            }
         }
 
         public IEnumerable<Type> GetRequiredInterfaces()

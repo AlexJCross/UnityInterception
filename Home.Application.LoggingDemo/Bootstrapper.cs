@@ -50,20 +50,26 @@ namespace Home.Application.LoggingDemo
         {
             this.Container.RegisterType<MainApp, MainApp>()
                           .RegisterType<ILoggingCallHandler, LoggingCallHandler>(new ContainerControlledLifetimeManager())
-                          .RegisterInstance<ILogger>(new Logger())
-                          .RegisterInstance<IItemFactory>(new ItemFactory());
+                          .RegisterInstance<ILogger>(new Logger());
 
             // Add interception functionality
             this.Container.AddNewExtension<Interception>();
-
-            // Register Attribute style logging
-            this.Container.Configure<Interception>()
-                .SetInterceptorFor<IItemFactory>(new InterfaceInterceptor());
 
             // Register behaviour style logging
             this.Container.RegisterType<IMarioKartPositionService, MarioKartPositionService>(
                 new Interceptor<InterfaceInterceptor>(),
                 new InterceptionBehavior<LoggingInterceptionBehavior>());
+
+            // Register Policy injection style logging
+            this.Container.RegisterType<IItemFactory, ItemFactory>(
+                new Interceptor<InterfaceInterceptor>(),
+                new InterceptionBehavior<PolicyInjectionBehavior>());
+
+            this.Container
+                .Configure<Interception>()
+                .AddPolicy("Logging")
+                .AddMatchingRule<AssemblyMatchingRule>(new InjectionConstructor(new InjectionParameter("Home.Application.LoggingDemo")))
+                .AddCallHandler<LoggingCallHandler>(new ContainerControlledLifetimeManager());
         }
     }
 }

@@ -22,7 +22,8 @@ namespace Home.Application.LoggingDemo
             
             // Log using behaviour interception
             Position position = this.positionService.GetPosition(player.Name);
-            
+            this.positionService.Overtake(player.Name);
+
             // Log using the Logging attribute
             Item powerUp = this.itemFactory.Create(position);
     

@@ -5,6 +5,8 @@ namespace Home.Application.LoggingDemo
     public interface IMarioKartPositionService
     {
         Position GetPosition(PlayerName player);
+
+        void Overtake(PlayerName player);
     }
 
     public enum Position
@@ -37,6 +39,15 @@ namespace Home.Application.LoggingDemo
                         string.Format("The player {0} is not supported.", player));
             }
         }
+
+
+        public void Overtake(PlayerName player)
+        {
+            if (player != PlayerName.AC )
+            {
+                Console.WriteLine("{0} overtook Luigi", player.ToString());
+            }
+        }
     }
 
     public class LoggingMarioKartPositionService : IMarioKartPositionService
@@ -59,6 +70,12 @@ namespace Home.Application.LoggingDemo
             this.logger.Log("Exited with value: " + position);
 
             return position;
+        }
+
+
+        public void Overtake(PlayerName player)
+        {
+            this.service.Overtake(player);
         }
     }
 
@@ -89,6 +106,11 @@ namespace Home.Application.LoggingDemo
         private Position RetrieveFromCache()
         {
             return default(Position);
+        }
+
+        public void Overtake(PlayerName player)
+        {
+            this.service.Overtake(player);
         }
     }
 }

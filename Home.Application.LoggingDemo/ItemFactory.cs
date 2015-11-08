@@ -1,8 +1,10 @@
 namespace Home.Application.LoggingDemo
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
-    [Logging]
+    // [Logging]
     public interface IItemFactory
     {
         Item Create(Position position);
@@ -12,6 +14,8 @@ namespace Home.Application.LoggingDemo
     {
         public Item Create(Position position)
         {
+            IEnumerable<string> e = new List<string>().Select(x => x.ToString());
+
             switch (position)
             {
                 case Position.First:
